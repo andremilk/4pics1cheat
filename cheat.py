@@ -1,13 +1,26 @@
-import argparse
+from word_matching import MatchingDB
 
-parser = argparse.ArgumentParser(description='Cheat on 4pics1word using brutefoce.')
+def main():
+    mdb = MatchingDB.MatchingDB('172.17.0.2', 'root', 'root', 'word', 'word', 'word')
+    # TODO: select matcher 
+    # TODO: keyboard interrupt gracefully interrupting
+    while True:
+        number_of_chars, pattern = input("Number of characters and pattern :").split(' ')
+        possible_solutions = []
+        results = set()
+        for word in mdb.get_words(int(number_of_chars)):
+            new_pattern = pattern
+            for c in word[1]:
+                if c not in new_pattern: 
+                    break
+                else:
+                    new_pattern = new_pattern.replace(c, "", 1)
+            else:
+                results.add(word[1])
 
-parser.add_argument('-l', metavar='en, pt', type=str, nargs=1, default='pt',
-                   help='a string to indicate the language')
+        print(sorted(results))
 
-parser.add_argument('-s', type=int, nargs=1, help='size of the word to be matched')
-parser.add_argument('chars', metavar='string of chars', type=str, nargs='+',
-                   help='characters to be used')
 
-args = parser.parse_args()
-print(args)
+
+if __name__ == '__main__':
+    main()
